@@ -2,6 +2,7 @@ import { Env, User, ProfileResponse, DEFAULT_DEV_SECRET } from '../types';
 import { StorageService } from '../services/storage';
 import { AuthService } from '../services/auth';
 import { RateLimitService, getClientIdentifier } from '../services/ratelimit';
+import { EmailService } from '../services/email';
 import { jsonResponse, errorResponse } from '../utils/response';
 import { generateUUID } from '../utils/uuid';
 import { LIMITS } from '../config/limits';
@@ -273,7 +274,7 @@ export async function handleRegister(request: Request, env: Env): Promise<Respon
 }
 
 // POST /api/accounts/password-hint
-export async function handleGetPasswordHint(request: Request, env: Env): Promise<Response> {
+export async function handleGetPasswordHint(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
   const storage = new StorageService(env.DB);
   const clientIdentifier = getClientIdentifier(request);
   if (!clientIdentifier) {
@@ -339,10 +340,16 @@ export async function handleGetPasswordHint(request: Request, env: Env): Promise
 
   const user = await storage.getUser(email);
   const hint = user?.status === 'active' ? normalizeMasterPasswordHint(user.masterPasswordHint) : null;
+
+  if (hint) {
+    const emailService = new EmailService(env);
+    // Send email in background
+    ctx.waitUntil(emailService.sendPasswordHint(email, hint));
+  }
+
+  // To match Bitwarden and protect privacy, always return success even if email/hint not found
   return jsonResponse({
     object: 'passwordHint',
-    hasHint: !!hint,
-    masterPasswordHint: hint,
   });
 }
 

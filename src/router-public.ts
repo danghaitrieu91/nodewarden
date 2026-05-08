@@ -228,7 +228,8 @@ export async function handlePublicRoute(
   env: Env,
   path: string,
   method: string,
-  enforcePublicRateLimit: PublicRateLimiter
+  enforcePublicRateLimit: PublicRateLimiter,
+  ctx: ExecutionContext
 ): Promise<Response | null> {
   if (path === '/.well-known/appspecific/com.chrome.devtools.json' && method === 'GET') {
     return new Response('{}', {
@@ -345,7 +346,7 @@ export async function handlePublicRoute(
         headers: { 'Content-Type': 'application/json' },
       });
     }
-    return handleGetPasswordHint(request, env);
+    return handleGetPasswordHint(request, env, ctx);
   }
 
   if ((path === '/config' || path === '/api/config') && method === 'GET') {

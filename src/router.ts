@@ -26,7 +26,7 @@ function isImportBypassRequest(request: Request, path: string, method: string): 
   return false;
 }
 
-export async function handleRequest(request: Request, env: Env): Promise<Response> {
+export async function handleRequest(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
   const url = new URL(request.url);
   const path = url.pathname;
   const method = request.method;
@@ -85,7 +85,7 @@ export async function handleRequest(request: Request, env: Env): Promise<Respons
       }
     }
 
-    const publicResponse = await handlePublicRoute(request, env, path, method, enforcePublicRateLimit);
+    const publicResponse = await handlePublicRoute(request, env, path, method, enforcePublicRateLimit, ctx);
     if (publicResponse) return publicResponse;
 
     const secretIssue = jwtSecretUnsafeReason(env);
@@ -134,7 +134,7 @@ export async function handleRequest(request: Request, env: Env): Promise<Respons
       }
     }
 
-    const authenticatedResponse = await handleAuthenticatedRoute(request, env, userId, currentUser, path, method);
+    const authenticatedResponse = await handleAuthenticatedRoute(request, env, userId, currentUser, path, method, ctx);
     if (authenticatedResponse) return authenticatedResponse;
 
     return errorResponse('Not found', 404);

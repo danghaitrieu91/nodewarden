@@ -1,0 +1,11 @@
+{
+  "workflow": {
+    "mode": "auto",
+    "use_docker": true,
+    "language": "vi"
+  },
+  "project": {
+    "name": "Nodewarden on Cloudflare",
+    "stack": ["Cloudflare Workers", "D1", "R2", "GitHub"]
+  }
+}

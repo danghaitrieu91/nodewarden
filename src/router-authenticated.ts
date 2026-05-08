@@ -73,7 +73,8 @@ export async function handleAuthenticatedRoute(
   userId: string,
   currentUser: User,
   path: string,
-  method: string
+  method: string,
+  ctx: ExecutionContext
 ): Promise<Response | null> {
   if (method === 'POST' || method === 'PUT' || method === 'DELETE') {
     const blockedAccountPaths = new Set([

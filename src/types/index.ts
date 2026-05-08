@@ -11,6 +11,8 @@ export interface Env {
   ATTACHMENTS_KV?: KVNamespace;
   JWT_SECRET: string;
   TOTP_SECRET?: string;
+  EMAILIT_API_KEY?: string;
+  EMAIL_FROM?: string;
 }
 
 export type UserRole = 'admin' | 'user';
