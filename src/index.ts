@@ -109,7 +109,7 @@ export default {
       return applyCors(normalizedRequest, resp);
     }
 
-    const resp = await handleRequest(normalizedRequest, env, ctx);
+    const resp = await handleRequest(normalizedRequest, env);
     return applyCors(normalizedRequest, resp);
   },
 
