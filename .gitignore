@@ -46,3 +46,5 @@ AGENTS.md
 settings.json
 .claude/
 NodeWarden-compat/
+
+.agent/
